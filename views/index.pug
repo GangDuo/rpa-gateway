@@ -5,7 +5,7 @@ block content
   p Welcome to #{title}
   form
     input#fire(type="button" value="送信")
-  div#output
+  pre#output
   script.
     (() => {
       var sock = new WebSocket('ws://' + window.location.host + '/');
