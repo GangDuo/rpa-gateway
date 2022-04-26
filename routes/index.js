@@ -11,16 +11,16 @@ router.get('/', function(req, res, next) {
 
 router.ws('/', function(ws, req) {
   ws.on('message', function(msg) {
-    ws.send('処理を開始しました！');
+    ws.send(JSON.stringify({data: '処理を開始しました！'}));
 
     exec(`nslookup yahoo.co.jp`)
     .then(({stdout, stderr}) => {
       console.log(stdout);
-      ws.send(stdout);
+      ws.send(JSON.stringify({data: stdout}));
     })
     .catch(err => {
       console.log(err)
-      ws.send(err.message)
+      ws.send(JSON.stringify({data: err.message}))
     })
   });
 });

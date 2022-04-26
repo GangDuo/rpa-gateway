@@ -13,8 +13,9 @@ block content
         console.log('接続成功');
       });
       sock.addEventListener('message', (e) => {
-        console.log(e.data);
-        document.getElementById('output').innerHTML += e.data + '<br>'
+        var decodedBody = JSON.parse(e.data)
+        console.log(decodedBody);
+        document.getElementById('output').innerHTML += decodedBody.data + '<br>'
       });
       sock.addEventListener('close',(event) => {
         if (event.wasClean) {
@@ -29,5 +30,5 @@ block content
         console.log(`[error] ${error.message}`);
       });
 
-      document.getElementById('fire').addEventListener('click', () => sock.send('from client'))
+      document.getElementById('fire').addEventListener('click', () => sock.send(JSON.stringify({data: 'from client'})))
     })()
