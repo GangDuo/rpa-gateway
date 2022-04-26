@@ -1,3 +1,6 @@
+var util = require('util');
+var childProcess = require('child_process');
+var exec = util.promisify(childProcess.exec);
 var express = require('express');
 var router = express.Router();
 
@@ -8,8 +11,17 @@ router.get('/', function(req, res, next) {
 
 router.ws('/', function(ws, req) {
   ws.on('message', function(msg) {
-    ws.send(msg);
-    setTimeout(_ => ws.send('from server'), 3000);
+    ws.send('処理を開始しました！');
+
+    exec(`nslookup yahoo.co.jp`)
+    .then(({stdout, stderr}) => {
+      console.log(stdout);
+      ws.send(stdout);
+    })
+    .catch(err => {
+      console.log(err)
+      ws.send(err.message)
+    })
   });
 });
 
