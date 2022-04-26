@@ -3,3 +3,31 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
+  form
+    input#fire(type="button" value="送信")
+  div#output
+  script.
+    (() => {
+      var sock = new WebSocket('ws://' + window.location.host + '/');
+      sock.addEventListener('open', (e) => {
+        console.log('接続成功');
+      });
+      sock.addEventListener('message', (e) => {
+        console.log(e.data);
+        document.getElementById('output').innerHTML += e.data + '<br>'
+      });
+      sock.addEventListener('close',(event) => {
+        if (event.wasClean) {
+          console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+        } else {
+          // e.g. server process killed or network down
+          // event.code is usually 1006 in this case
+          console.log('[close] Connection died');
+        }
+      });
+      sock.addEventListener('error', (error) => {
+        console.log(`[error] ${error.message}`);
+      });
+
+      document.getElementById('fire').addEventListener('click', () => sock.send('from client'))
+    })()
