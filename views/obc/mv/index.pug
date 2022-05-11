@@ -5,6 +5,8 @@ block content
   p Welcome to #{title}
   form
     input#fire(type="button" value="送信")
+  p
+    img#loading(src="/images/loading.gif" style="display:none;")
   pre#output
   script.
     (() => {
@@ -15,7 +17,12 @@ block content
       sock.addEventListener('message', (e) => {
         var decodedBody = JSON.parse(e.data)
         console.log(decodedBody);
-        document.getElementById('output').innerHTML += decodedBody.data + '<br>'
+        if(decodedBody.data) {
+          document.getElementById('output').innerHTML += decodedBody.data + '<br>'
+        } else {
+          document.getElementById('fire').removeAttribute("disabled")
+          document.getElementById('loading').style.display='none';
+        }
       });
       sock.addEventListener('close',(event) => {
         if (event.wasClean) {
@@ -30,5 +37,9 @@ block content
         console.log(`[error] ${error.message}`);
       });
 
-      document.getElementById('fire').addEventListener('click', () => sock.send(JSON.stringify({data: 'from client'})))
+      document.getElementById('fire').addEventListener('click', () => {
+        document.getElementById('fire').setAttribute("disabled", true)
+        document.getElementById('loading').style.display='';
+        sock.send(JSON.stringify({data: 'from client'}));
+      })
     })()
