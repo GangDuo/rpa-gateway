@@ -5,24 +5,43 @@ var exec = util.promisify(childProcess.exec);
 var express = require('express');
 var router = express.Router();
 
+const CACHE_DIR = process.env.CACHE_DIR_OBC_MV
+const WORK_DIR = process.env.RPA_APP_HOME
+const BIN = process.env.BIN_OBC_MV
+const result = process.env.OUT_OBC_MV
+const cmds = [
+  `pushd "${WORK_DIR}"&${BIN} /cmd "import;${CACHE_DIR}"`,
+  `pushd "${WORK_DIR}"&${BIN} /cmd convert;`,
+  `pushd "${WORK_DIR}"&${BIN} /cmd "export;${result}"`,
+];
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('obc/mv/index', { title: 'Express' });
 });
 
 router.ws('/', function(ws, req) {
-  ws.on('message', function(msg) {
+  ws.on('message', async function(msg) {
     ws.send(JSON.stringify({data: '処理を開始しました！'}));
 
     const iconv = new Iconv('SHIFT_JIS', 'UTF-8')
-    exec(`nslookup yahoo.co.jp`, {encoding: 'Shift_JIS'})
-    .then(({stdout, stderr}) => {
-      ws.send(JSON.stringify({data: iconv.convert(stdout).toString()}));
-    })
-    .catch(err => {
+    try {
+      for (let i = 0; i < cmds.length; i++) {
+        const cmd = cmds[i];
+        ws.send(JSON.stringify({data: cmd}));
+        const {stdout, stderr} = await exec(cmd, {encoding: 'Shift_JIS'})
+        if(stdout) {
+          ws.send(JSON.stringify({data: iconv.convert(stdout).toString()}));
+        }
+        if(stderr){
+          console.log(iconv.convert(stderr).toString())
+        }
+      }
+    } catch (err) {
       console.log(err)
-      ws.send(JSON.stringify({data: err.message}))
-    })
+    } finally {
+      ws.send(JSON.stringify({data: '終了！'}));
+    }
   });
 });
 
