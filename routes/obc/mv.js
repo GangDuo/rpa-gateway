@@ -31,7 +31,7 @@ router.ws('/', function(ws, req) {
         ws.send(JSON.stringify({data: cmd}));
         const {stdout, stderr} = await exec(cmd, {encoding: 'Shift_JIS'})
         if(stdout) {
-          ws.send(JSON.stringify({data: iconv.convert(stdout).toString()}));
+          console.log(iconv.convert(stdout).toString())
         }
         if(stderr){
           console.log(iconv.convert(stderr).toString())
@@ -40,7 +40,7 @@ router.ws('/', function(ws, req) {
     } catch (err) {
       console.log(err)
     } finally {
-      ws.send(JSON.stringify({data: '終了！'}));
+      ws.send(JSON.stringify({data: ''}));
     }
   });
 });
