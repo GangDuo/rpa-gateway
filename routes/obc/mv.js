@@ -7,7 +7,7 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  res.render('obc/mv/index', { title: 'Express' });
 });
 
 router.ws('/', function(ws, req) {
