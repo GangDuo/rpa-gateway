@@ -23,7 +23,7 @@ const BIN = process.env.BIN_OBC_MV
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('obc/mv/index', { title: 'Express' });
+  res.render('obc/mv/index', { title: '移動CSV変換' });
 });
 
 router.ws('/', function(ws, req) {
