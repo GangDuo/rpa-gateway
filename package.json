@@ -3,17 +3,21 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon -e js,json,pug ./bin/www"
+    "start": "nodemon -e js,json,pug -r dotenv/config ./bin/www"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
+    "dayjs": "^1.11.2",
     "debug": "~2.6.9",
+    "dotenv": "^16.0.1",
     "express": "~4.16.1",
     "express-ws": "^5.0.2",
+    "fmww-library": "github:GangDuo/fmww-library-js",
     "http-errors": "~1.6.3",
     "iconv": "^3.0.1",
     "morgan": "~1.9.1",
     "pug": "2.0.0-beta11",
+    "temp": "^0.9.4",
     "ws": "^8.5.0"
   },
   "devDependencies": {
