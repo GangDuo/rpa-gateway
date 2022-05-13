@@ -17,7 +17,6 @@ var router = express.Router();
 const { FmClient, MovementExport, Between } = require('fmww-library');
 const dayjs = require('dayjs')
 
-const CACHE_DIR = process.env.CACHE_DIR_OBC_MV
 const WORK_DIR = process.env.RPA_APP_HOME
 const BIN = process.env.BIN_OBC_MV
 
