@@ -8,10 +8,14 @@ block content
   p
     img#loading(src="/images/loading.gif" style="display:none;")
   pre#output
+  script(src="/javascripts/ws.js")
   script.
     (() => {
-      document.getElementById('fire').addEventListener('click', () => {
-        document.getElementById('fire').setAttribute("disabled", true)
-        document.getElementById('loading').style.display='';
-      })
+      var action = new DefaultSubmitAction({
+        path: '/fmww/returnedGoods',
+        fire: 'fire',
+        loading: 'loading',
+        output: 'output',
+      });
+      action.enable();      
     })()
