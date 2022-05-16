@@ -8,38 +8,14 @@ block content
   p
     img#loading(src="/images/loading.gif" style="display:none;")
   pre#output
+  script(src="/javascripts/ws.js")
   script.
     (() => {
-      var sock = new WebSocket('ws://' + window.location.host + '/obc/mv');
-      sock.addEventListener('open', (e) => {
-        console.log('接続成功');
+      var action = new DefaultSubmitAction({
+        path: '/obc/mv',
+        fire: 'fire',
+        loading: 'loading',
+        output: 'output',
       });
-      sock.addEventListener('message', (e) => {
-        var decodedBody = JSON.parse(e.data)
-        console.log(decodedBody);
-        if(decodedBody.data) {
-          document.getElementById('output').innerHTML += decodedBody.data + '<br>'
-        } else {
-          document.getElementById('fire').removeAttribute("disabled")
-          document.getElementById('loading').style.display='none';
-        }
-      });
-      sock.addEventListener('close',(event) => {
-        if (event.wasClean) {
-          console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
-        } else {
-          // e.g. server process killed or network down
-          // event.code is usually 1006 in this case
-          console.log('[close] Connection died');
-        }
-      });
-      sock.addEventListener('error', (error) => {
-        console.log(`[error] ${error.message}`);
-      });
-
-      document.getElementById('fire').addEventListener('click', () => {
-        document.getElementById('fire').setAttribute("disabled", true)
-        document.getElementById('loading').style.display='';
-        sock.send(JSON.stringify({data: 'from client'}));
-      })
+      action.enable();
     })()
