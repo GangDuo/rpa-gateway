@@ -1,0 +1,17 @@
+extends ../../layout
+
+block content
+  h1= title
+  p 返品データを基幹システムに登録する。
+  form
+    input#fire(type="button" value="送信")
+  p
+    img#loading(src="/images/loading.gif" style="display:none;")
+  pre#output
+  script.
+    (() => {
+      document.getElementById('fire').addEventListener('click', () => {
+        document.getElementById('fire').setAttribute("disabled", true)
+        document.getElementById('loading').style.display='';
+      })
+    })()
