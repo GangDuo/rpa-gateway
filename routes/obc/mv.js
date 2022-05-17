@@ -1,10 +1,7 @@
 var fs = require("fs");
 var temp = require('temp');
 var path = require('path');
-var Iconv = require('iconv').Iconv;
 var util = require('util');
-var childProcess = require('child_process');
-var exec = util.promisify(childProcess.exec);
 const readFile = util.promisify(fs.readFile);
 const mkdir = util.promisify(fs.mkdir);
 const rmdir = util.promisify(fs.rmdir);
@@ -39,7 +36,7 @@ router.ws('/', function(ws, req) {
         endDate: dayjs().subtract(1, "month").endOf('month').format('YYYY-MM-DD'),
       });
       await Helpers.rmPeriodInFilename(tmpdir);
-      await execCmds([
+      await Helpers.execCmds([
         `pushd "${WORK_DIR}"&${BIN} /cmd "import;${tmpdir}"`,
         `pushd "${WORK_DIR}"&${BIN} /cmd convert;`,
         `pushd "${WORK_DIR}"&${BIN} /cmd "export;${filepath}"`,
@@ -54,22 +51,6 @@ router.ws('/', function(ws, req) {
     }
   });
 });
-
-async function execCmds(cmds) {
-  const iconv = new Iconv('SHIFT_JIS', 'UTF-8')
-
-  for (let i = 0; i < cmds.length; i++) {
-    const cmd = cmds[i];
-    console.log(JSON.stringify({data: cmd}));
-    const {stdout, stderr} = await exec(cmd, {encoding: 'Shift_JIS'})
-    if(stdout) {
-      console.log(iconv.convert(stdout).toString())
-    }
-    if(stderr){
-      console.log(iconv.convert(stderr).toString())
-    }
-  }
-}
 
 async function rmdirX(dir) {
   const xs = await readdir(dir)
