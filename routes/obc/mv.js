@@ -10,7 +10,6 @@ const mkdir = util.promisify(fs.mkdir);
 const rmdir = util.promisify(fs.rmdir);
 const unlink = util.promisify(fs.unlink);
 const readdir = util.promisify(fs.readdir);
-const rename = util.promisify(fs.rename);
 var express = require('express');
 var router = express.Router();
 const MovementExporter = require('../components/MovementExporter');
@@ -39,7 +38,7 @@ router.ws('/', function(ws, req) {
         beginDate: dayjs().subtract(1, "month").startOf('month').format('YYYY-MM-DD'),
         endDate: dayjs().subtract(1, "month").endOf('month').format('YYYY-MM-DD'),
       });
-      await rmPeriodInFilename(tmpdir);
+      await Helpers.rmPeriodInFilename(tmpdir);
       await execCmds([
         `pushd "${WORK_DIR}"&${BIN} /cmd "import;${tmpdir}"`,
         `pushd "${WORK_DIR}"&${BIN} /cmd convert;`,
@@ -69,16 +68,6 @@ async function execCmds(cmds) {
     if(stderr){
       console.log(iconv.convert(stderr).toString())
     }
-  }
-}
-
-async function rmPeriodInFilename(dir) {
-  const xs = await readdir(dir)
-  for (let i = 0; i < xs.length; i++) {
-    var old = xs[i],
-        n = xs[i].replace(/\.(?=\d+)/g, '_');
-    await rename(path.join(dir, old), path.join(dir, n))
-      .catch(e => console.log(e));
   }
 }
 
