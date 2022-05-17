@@ -1,5 +1,4 @@
 var fs = require("fs");
-var os = require('os');
 var temp = require('temp');
 var path = require('path');
 var Iconv = require('iconv').Iconv;
@@ -15,6 +14,7 @@ const rename = util.promisify(fs.rename);
 var express = require('express');
 var router = express.Router();
 const MovementExporter = require('../components/MovementExporter');
+const Helpers = require('../components/Helpers');
 const dayjs = require('dayjs')
 
 const WORK_DIR = process.env.RPA_APP_HOME
@@ -30,7 +30,7 @@ router.ws('/', function(ws, req) {
     ws.send(JSON.stringify({data: '処理を開始しました！'}));
 
     const filepath = temp.path({suffix: '.csv'}).replace(/\.(?=\w+\.csv)/, '_');
-    const tmpdir = path.join(os.tmpdir(), Math.random().toString(36).substring(2));
+    const tmpdir = Helpers.tmpdir();
     const me = new MovementExporter;
     console.log(tmpdir)
     try {
