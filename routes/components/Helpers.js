@@ -2,6 +2,7 @@ var os = require('os');
 var path = require('path');
 var fs = require("fs");
 var util = require('util');
+var temp = require('temp');
 var Iconv = require('iconv').Iconv;
 var childProcess = require('child_process');
 
@@ -10,6 +11,10 @@ const readdir = util.promisify(fs.readdir);
 const rename = util.promisify(fs.rename);
 
 class Helpers {
+  static tmpFilepath() {
+    return temp.path({suffix: '.csv'}).replace(/\.(?=\w+\.csv)/, '_');
+  }
+
   static tmpdir() {
     return path.join(os.tmpdir(), Math.random().toString(36).substring(2));
   }

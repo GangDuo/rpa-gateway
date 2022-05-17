@@ -1,5 +1,4 @@
 var fs = require("fs");
-var temp = require('temp');
 var path = require('path');
 var util = require('util');
 const readFile = util.promisify(fs.readFile);
@@ -25,7 +24,7 @@ router.ws('/', function(ws, req) {
   ws.on('message', async function(msg) {
     ws.send(JSON.stringify({data: '処理を開始しました！'}));
 
-    const filepath = temp.path({suffix: '.csv'}).replace(/\.(?=\w+\.csv)/, '_');
+    const filepath = Helpers.tmpFilepath();
     const tmpdir = Helpers.tmpdir();
     const me = new MovementExporter;
     console.log(tmpdir)
