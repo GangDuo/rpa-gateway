@@ -8,6 +8,7 @@ var router = express.Router();
 const mkdir = util.promisify(fs.mkdir);
 const readdir = util.promisify(fs.readdir);
 const stat = util.promisify(fs.stat);
+const readFile = util.promisify(fs.readFile);
 
 const MovementExporter = require('../components/MovementExporter');
 const Helpers = require('../components/Helpers');
@@ -52,7 +53,9 @@ router.ws('/', function(ws, req) {
         const statusText = await upload(filepath);
         if(statusText) {
           ws.send(JSON.stringify({data: statusText}));
-        }  
+        }
+        let base64 = await readFile(filepath, {encoding: "base64"})
+        ws.send(JSON.stringify({data: `<a download="${path.basename(filepath)}" href="data:application/octet-stream;base64,${base64}">ダウンロード</a>`}));
       }
     } catch (error) {   
       console.log(error)   
