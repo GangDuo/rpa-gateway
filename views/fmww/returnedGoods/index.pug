@@ -2,7 +2,7 @@ extends ../../layout
 
 block content
   h1= title
-  p 移動データを勘定系システムへ登録できる形式に変換する。
+  p 返品データを基幹システムに登録する。
   form
     input#fire(type="button" value="送信")
   p
@@ -12,10 +12,10 @@ block content
   script.
     (() => {
       var action = new DefaultSubmitAction({
-        path: '/obc/mv',
+        path: '/fmww/returnedGoods',
         fire: 'fire',
         loading: 'loading',
         output: 'output',
       });
-      action.enable();
+      action.enable();      
     })()
