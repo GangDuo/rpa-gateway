@@ -50,12 +50,13 @@ router.ws('/', function(ws, req) {
       if(stats.size === 0) {
         ws.send(JSON.stringify({data: '返品データがありません。'}));
       } else {
+        let base64 = await readFile(filepath, {encoding: "base64"})
+        ws.send(JSON.stringify({data: `<a download="${path.basename(filepath)}" href="data:application/octet-stream;base64,${base64}">ダウンロード</a>`}));
+
         const statusText = await upload(filepath);
         if(statusText) {
           ws.send(JSON.stringify({data: statusText}));
         }
-        let base64 = await readFile(filepath, {encoding: "base64"})
-        ws.send(JSON.stringify({data: `<a download="${path.basename(filepath)}" href="data:application/octet-stream;base64,${base64}">ダウンロード</a>`}));
       }
     } catch (error) {   
       console.log(error)   
