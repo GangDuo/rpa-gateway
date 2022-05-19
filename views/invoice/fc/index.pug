@@ -1,0 +1,21 @@
+extends ../../layout
+
+block content
+  h1= title
+  p フランチャイズ店の請求書を生成する。
+  form
+    input#fire(type="button" value="送信")
+  p
+    img#loading(src="/images/loading.gif" style="display:none;")
+  pre#output
+  script(src="/javascripts/ws.js")
+  script.
+    (() => {
+      var action = new DefaultSubmitAction({
+        path: '/invoice/fc',
+        fire: 'fire',
+        loading: 'loading',
+        output: 'output',
+      });
+      action.enable();      
+    })()
