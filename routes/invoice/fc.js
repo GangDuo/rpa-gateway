@@ -1,6 +1,10 @@
+var fs = require("fs");
+var util = require('util');
 var express = require('express');
 var router = express.Router();
+const mkdir = util.promisify(fs.mkdir);
 const { FmClient, PurchaseHistory } = require('fmww-library');
+const Helpers = require('../components/Helpers');
 
 router.get('/', function(req, res, next) {
   res.render('invoice/fc/index', { title: 'FC請求書' });
@@ -9,6 +13,10 @@ router.get('/', function(req, res, next) {
 router.ws('/', function(ws, req) {
   ws.on('message', async function(msg) {
     try {
+      const tmpdir = Helpers.tmpdir();
+      console.log(tmpdir)
+      await mkdir(tmpdir);
+
       // 基幹システムから仕入実績データを取得する。
       const client = new FmClient()
       await client
@@ -21,7 +29,7 @@ router.ws('/', function(ws, req) {
         })
         .createAbility(PurchaseHistory)
       const response = await client.search({
-        directoryToSaveFile: '.',
+        directoryToSaveFile: tmpdir,
         span: {
           begin: '2022年03月01日',
           end: '2022年03月01日'
