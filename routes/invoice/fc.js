@@ -6,6 +6,9 @@ const mkdir = util.promisify(fs.mkdir);
 const { FmClient, PurchaseHistory } = require('fmww-library');
 const Helpers = require('../components/Helpers');
 
+const WORK_DIR = process.env.RPA_APP_HOME
+const BIN = process.env.BIN_INVOICE_FC
+
 router.get('/', function(req, res, next) {
   res.render('invoice/fc/index', { title: 'FC請求書' });
 });
@@ -40,8 +43,14 @@ router.ws('/', function(ws, req) {
         ws.send(JSON.stringify({data: response.statusText}));
       }
 
-      // TODO: データ変換
-      // TODO: 勘定系システムのデータソースとしてテキストファイルを出力する。
+      // 勘定系システムのデータソースとしてテキストファイルを出力する。
+      const filepath = Helpers.tmpFilepath('.txt');
+      console.log(filepath)
+      await Helpers.execCmds([
+        `pushd "${WORK_DIR}"&${BIN} /cmd "import;${tmpdir}"`,
+        `pushd "${WORK_DIR}"&${BIN} /cmd convert;`,
+        `pushd "${WORK_DIR}"&${BIN} /cmd "export;${filepath}"`,
+      ]);
     } catch (error) {   
       console.log(error)   
     } finally {
