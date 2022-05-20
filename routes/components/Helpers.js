@@ -11,8 +11,9 @@ const readdir = util.promisify(fs.readdir);
 const rename = util.promisify(fs.rename);
 
 class Helpers {
-  static tmpFilepath() {
-    return temp.path({suffix: '.csv'}).replace(/\.(?=\w+\.csv)/, '_');
+  static tmpFilepath(suffix = '.csv') {
+    var pattern = new RegExp(`\\.(?=\\w+\\${suffix})`);
+    return temp.path({suffix}).replace(pattern, '_');
   }
 
   static tmpdir() {
