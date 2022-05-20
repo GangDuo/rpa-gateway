@@ -1,9 +1,11 @@
 var fs = require("fs");
+var path = require('path');
 var util = require('util');
 const dayjs = require('dayjs');
 var express = require('express');
 var router = express.Router();
 const mkdir = util.promisify(fs.mkdir);
+const readFile = util.promisify(fs.readFile);
 const { FmClient, PurchaseHistory } = require('fmww-library');
 const Helpers = require('../components/Helpers');
 
@@ -65,6 +67,9 @@ router.ws('/', function(ws, req) {
         `pushd "${WORK_DIR}"&${BIN} /cmd convert;`,
         `pushd "${WORK_DIR}"&${BIN} /cmd "export;${filepath}"`,
       ]);
+
+      let base64 = await readFile(filepath, {encoding: "base64"})
+      ws.send(JSON.stringify({data: `<a download="${path.basename(filepath)}" href="data:application/octet-stream;base64,${base64}">ダウンロード</a>`}));
     } catch (error) {   
       console.log(error)   
     } finally {
