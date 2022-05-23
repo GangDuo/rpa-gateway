@@ -3,6 +3,10 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
+  ul
+    li: a(href="/invoice/fc") FC請求書
+    li: a(href="/obc/mv") 移動CSV変換
+    li: a(href="/fmww/returnedGoods") 仕入返品
   form
     input#fire(type="button" value="送信")
   pre#output
