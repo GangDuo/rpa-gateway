@@ -7,32 +7,3 @@ block content
     li: a(href="/invoice/fc") FC請求書
     li: a(href="/obc/mv") 移動CSV変換
     li: a(href="/fmww/returnedGoods") 仕入返品
-  form
-    input#fire(type="button" value="送信")
-  pre#output
-  script.
-    (() => {
-      var sock = new WebSocket('ws://' + window.location.host + '/');
-      sock.addEventListener('open', (e) => {
-        console.log('接続成功');
-      });
-      sock.addEventListener('message', (e) => {
-        var decodedBody = JSON.parse(e.data)
-        console.log(decodedBody);
-        document.getElementById('output').innerHTML += decodedBody.data + '<br>'
-      });
-      sock.addEventListener('close',(event) => {
-        if (event.wasClean) {
-          console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
-        } else {
-          // e.g. server process killed or network down
-          // event.code is usually 1006 in this case
-          console.log('[close] Connection died');
-        }
-      });
-      sock.addEventListener('error', (error) => {
-        console.log(`[error] ${error.message}`);
-      });
-
-      document.getElementById('fire').addEventListener('click', () => sock.send(JSON.stringify({data: 'from client'})))
-    })()
