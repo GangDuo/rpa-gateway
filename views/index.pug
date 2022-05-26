@@ -3,32 +3,12 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
-  form
-    input#fire(type="button" value="送信")
-  pre#output
-  script.
-    (() => {
-      var sock = new WebSocket('ws://' + window.location.host + '/');
-      sock.addEventListener('open', (e) => {
-        console.log('接続成功');
-      });
-      sock.addEventListener('message', (e) => {
-        var decodedBody = JSON.parse(e.data)
-        console.log(decodedBody);
-        document.getElementById('output').innerHTML += decodedBody.data + '<br>'
-      });
-      sock.addEventListener('close',(event) => {
-        if (event.wasClean) {
-          console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
-        } else {
-          // e.g. server process killed or network down
-          // event.code is usually 1006 in this case
-          console.log('[close] Connection died');
-        }
-      });
-      sock.addEventListener('error', (error) => {
-        console.log(`[error] ${error.message}`);
-      });
-
-      document.getElementById('fire').addEventListener('click', () => sock.send(JSON.stringify({data: 'from client'})))
-    })()
+  ul.list-group
+    -
+      var xs = [
+        {link: '/invoice/fc', text: 'FC請求書'},
+        {link: '/obc/mv', text: '移動CSV変換'},
+        {link: '/fmww/returnedGoods', text: '仕入返品'},
+      ]
+    each x in xs
+      li.list-group-item.col-6: a.col-12.btn.btn-primary(href=x.link role="button") #{x.text}
