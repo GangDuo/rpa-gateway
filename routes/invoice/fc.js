@@ -6,8 +6,8 @@ var express = require('express');
 var router = express.Router();
 const mkdir = util.promisify(fs.mkdir);
 const readFile = util.promisify(fs.readFile);
-const { FmClient, PurchaseHistory } = require('fmww-library');
 const Helpers = require('../components/Helpers');
+const Buying = require('../components/Buying');
 
 const WORK_DIR = process.env.RPA_APP_HOME
 const BIN = process.env.BIN_INVOICE_FC
@@ -36,27 +36,16 @@ router.ws('/', function(ws, req) {
       // 基幹システムから仕入実績データを取得する。
       for (let i = 0; i < tasks.length; i++) {
         const task = tasks[i];
-
-        const client = new FmClient()
-        await client
-          .open(process.env.FMWW_SIGN_IN_URL)
-          .signIn({
-            FMWW_ACCESS_KEY_ID     : process.env.FMWW_ACCESS_KEY_ID,
-            FMWW_USER_NAME         : process.env.FMWW_USER_NAME,
-            FMWW_SECRET_ACCESS_KEY : process.env.FMWW_SECRET_ACCESS_KEY,
-            FMWW_PASSWORD          : process.env.FMWW_PASSWORD
-          })
-          .createAbility(PurchaseHistory)
-        const response = await client.search({
+        const b = new Buying;
+        const response = await b.export({
           directoryToSaveFile: tmpdir,
           span: {
             ...task
           }
-        })
-        await client.quit()
-        if(response.statusText) {
-          ws.send(JSON.stringify({data: response.statusText}));
-        }
+        });
+        if (response.statusText) {
+          ws.send(JSON.stringify({ data: response.statusText }));
+        }  
       }
 
       // 勘定系システムのデータソースとしてテキストファイルを出力する。
