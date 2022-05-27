@@ -1,7 +1,6 @@
 var fs = require("fs");
 var path = require('path');
 var util = require('util');
-const dayjs = require('dayjs');
 var express = require('express');
 var router = express.Router();
 const mkdir = util.promisify(fs.mkdir);
@@ -18,15 +17,7 @@ router.get('/', function(req, res, next) {
 
 router.ws('/', function(ws, req) {
   ws.on('message', async function(msg) {
-    const tmpl = 'YYYY年MM月DD日'
-    var d1 = dayjs().subtract(1, "month").startOf('month');
-    var tasks = [{
-      begin: d1.format(tmpl),
-      end: d1.add(14, "day").format(tmpl)
-    }, {
-      begin: d1.add(15, "day").format(tmpl),
-      end: d1.endOf('month').format(tmpl)
-    }]
+    var tasks = Buying.halveLastMonth();
 
     try {
       const tmpdir = Helpers.tmpdir();

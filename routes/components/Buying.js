@@ -1,3 +1,4 @@
+const dayjs = require('dayjs');
 const { FmClient, PurchaseHistory } = require('fmww-library');
 
 class Buying {
@@ -15,7 +16,19 @@ class Buying {
     const response = await client.search(options);
     await client.quit();
     return response;
-  }  
+  }
+
+  static async halveLastMonth() {
+    const tmpl = 'YYYY年MM月DD日'
+    var d1 = dayjs().subtract(1, "month").startOf('month');
+    return [{
+      begin: d1.format(tmpl),
+      end: d1.add(14, "day").format(tmpl)
+    }, {
+      begin: d1.add(15, "day").format(tmpl),
+      end: d1.endOf('month').format(tmpl)
+    }]
+  }
 }
 
 module.exports = Buying;
