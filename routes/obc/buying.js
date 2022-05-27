@@ -6,6 +6,9 @@ const mkdir = util.promisify(fs.mkdir);
 const Helpers = require('../components/Helpers');
 const Buying = require('../components/Buying');
 
+const WORK_DIR = process.env.RPA_APP_HOME
+const BIN = process.env.BIN_OBC_BUY
+
 router.get('/', function(req, res, next) {
   res.render('obc/buying/index', { title: '仕入CSV変換' });
 });
@@ -33,8 +36,14 @@ router.ws('/', function(ws, req) {
         }  
       }
 
-      // TODO: フォーマット変換
-      // TODO: 勘定系システムのデータソースとしてCSVファイルを出力する。
+      // 勘定系システムのデータソースとしてCSVファイルを出力する。
+      const filepath = Helpers.tmpFilepath();
+      console.log(filepath)
+      await Helpers.execCmds([
+        `pushd "${WORK_DIR}"&${BIN} /cmd "import;${tmpdir}"`,
+        `pushd "${WORK_DIR}"&${BIN} /cmd convert;`,
+        `pushd "${WORK_DIR}"&${BIN} /cmd "export;${filepath}"`,
+      ]);
     } catch (error) {   
       console.log(error)   
     } finally {
