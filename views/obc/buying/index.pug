@@ -1,0 +1,21 @@
+extends ../../layout
+
+block content
+  h1= title
+  p 仕入実績データを勘定系システムへ登録できる形式に変換する。
+  form
+    input#fire.btn.btn-primary(type="button" value="送信")
+  p
+    img#loading(src="/images/loading.gif" style="display:none;")
+  pre#output
+  script(src="/javascripts/ws.js")
+  script.
+    (() => {
+      var action = new DefaultSubmitAction({
+        path: '/obc/buying',
+        fire: 'fire',
+        loading: 'loading',
+        output: 'output',
+      });
+      action.enable();      
+    })()

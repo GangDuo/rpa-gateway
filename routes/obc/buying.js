@@ -1,5 +1,5 @@
-var fs = require("fs");
 var path = require('path');
+var fs = require("fs");
 var util = require('util');
 var express = require('express');
 var router = express.Router();
@@ -9,22 +9,21 @@ const Helpers = require('../components/Helpers');
 const Buying = require('../components/Buying');
 
 const WORK_DIR = process.env.RPA_APP_HOME
-const BIN = process.env.BIN_INVOICE_FC
+const BIN = process.env.BIN_OBC_BUY
 
 router.get('/', function(req, res, next) {
-  res.render('invoice/fc/index', { title: 'FC請求書' });
+  res.render('obc/buying/index', { title: '仕入CSV変換' });
 });
 
 router.ws('/', function(ws, req) {
   ws.on('message', async function(msg) {
-    var tasks = Buying.halveLastMonth();
-
     try {
       const tmpdir = Helpers.tmpdir();
       console.log(tmpdir)
       await mkdir(tmpdir);
 
       // 基幹システムから仕入実績データを取得する。
+      var tasks = Buying.halveLastMonth();
       for (let i = 0; i < tasks.length; i++) {
         const task = tasks[i];
         const b = new Buying;
@@ -39,8 +38,8 @@ router.ws('/', function(ws, req) {
         }  
       }
 
-      // 勘定系システムのデータソースとしてテキストファイルを出力する。
-      const filepath = Helpers.tmpFilepath('.txt');
+      // 勘定系システムのデータソースとしてCSVファイルを出力する。
+      const filepath = Helpers.tmpFilepath();
       console.log(filepath)
       await Helpers.execCmds([
         `pushd "${WORK_DIR}"&${BIN} /cmd "import;${tmpdir}"`,

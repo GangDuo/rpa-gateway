@@ -10,6 +10,7 @@ var expressWs = require('express-ws')(app);
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var obcMvRouter = require('./routes/obc/mv');
+var obcBuyingRouter = require('./routes/obc/buying');
 var returnedGoodsRouter = require('./routes/fmww/returnedGoods');
 var fcInvoiceRouter = require('./routes/invoice/fc');
 
@@ -26,6 +27,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/obc/mv', obcMvRouter);
+app.use('/obc/buying', obcBuyingRouter);
 app.use('/fmww/returnedGoods', returnedGoodsRouter);
 app.use('/invoice/fc', fcInvoiceRouter);
 
