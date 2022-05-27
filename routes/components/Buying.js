@@ -18,7 +18,7 @@ class Buying {
     return response;
   }
 
-  static async halveLastMonth() {
+  static halveLastMonth() {
     const tmpl = 'YYYY年MM月DD日'
     var d1 = dayjs().subtract(1, "month").startOf('month');
     return [{
