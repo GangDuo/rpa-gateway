@@ -19,15 +19,27 @@ class Buying {
   }
 
   static halveLastMonth() {
-    const tmpl = 'YYYY年MM月DD日'
     var d1 = dayjs().subtract(1, "month").startOf('month');
-    return [{
-      begin: d1.format(tmpl),
-      end: d1.add(14, "day").format(tmpl)
-    }, {
-      begin: d1.add(15, "day").format(tmpl),
-      end: d1.endOf('month').format(tmpl)
-    }]
+    return Buying.halve(d1, d1.endOf('month'));
+  }
+
+  static halve(begin, end) {
+    const tmpl = 'YYYY年MM月DD日'
+
+    if(end.get('date') < 15) {
+      return [{
+        begin: begin.format(tmpl),
+        end: end.format(tmpl)
+      }]
+    } else {
+      return [{
+        begin: begin.format(tmpl),
+        end: begin.add(14, "day").format(tmpl)
+      }, {
+        begin: begin.add(15, "day").format(tmpl),
+        end: end.format(tmpl)
+      }]
+    }
   }
 }
 
