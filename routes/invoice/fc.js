@@ -3,6 +3,7 @@ var path = require('path');
 var util = require('util');
 var express = require('express');
 var router = express.Router();
+const dayjs = require('dayjs');
 const mkdir = util.promisify(fs.mkdir);
 const readFile = util.promisify(fs.readFile);
 const Helpers = require('../components/Helpers');
@@ -17,7 +18,12 @@ router.get('/', function(req, res, next) {
 
 router.ws('/', function(ws, req) {
   ws.on('message', async function(msg) {
-    var tasks = Buying.halveLastMonth();
+    var tasks = [
+      ...Buying.halveLastMonth(),
+      ...Buying.halve(
+        dayjs().startOf('month'), 
+        dayjs().subtract(1, 'day'))
+    ];
 
     try {
       const tmpdir = Helpers.tmpdir();
