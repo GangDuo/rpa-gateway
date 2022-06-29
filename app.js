@@ -12,6 +12,7 @@ var usersRouter = require('./routes/users');
 var obcMvRouter = require('./routes/obc/mv');
 var obcBuyingRouter = require('./routes/obc/buying');
 var returnedGoodsRouter = require('./routes/fmww/returnedGoods');
+var wasteRouter = require('./routes/fmww/waste');
 var fcInvoiceRouter = require('./routes/invoice/fc');
 
 // view engine setup
@@ -29,6 +30,7 @@ app.use('/users', usersRouter);
 app.use('/obc/mv', obcMvRouter);
 app.use('/obc/buying', obcBuyingRouter);
 app.use('/fmww/returnedGoods', returnedGoodsRouter);
+app.use('/fmww/waste', wasteRouter);
 app.use('/invoice/fc', fcInvoiceRouter);
 
 // catch 404 and forward to error handler

@@ -1,0 +1,21 @@
+extends ../../layout
+
+block content
+  h1= title
+  p 部門単位で廃棄金額を集計する。
+  form
+    input#fire.btn.btn-primary(type="button" value="送信")
+  p
+    img#loading(src="/images/loading.gif" style="display:none;")
+  pre#output
+  script(src="/javascripts/ws.js")
+  script.
+    (() => {
+      var action = new DefaultSubmitAction({
+        path: '/fmww/waste',
+        fire: 'fire',
+        loading: 'loading',
+        output: 'output',
+      });
+      action.enable();      
+    })()
