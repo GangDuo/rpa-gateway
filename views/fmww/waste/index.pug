@@ -4,7 +4,18 @@ block content
   h1= title
   p 部門単位で廃棄金額を集計する。
   form
-    input#fire.btn.btn-primary(type="button" value="送信")
+    div.row
+      div.col-1
+        label.form-label 期間
+      div.col-3
+        input.form-control(type="date" required)
+    div.row
+      div.col-1
+      div.col-3
+        input.form-control(type="date" required)
+    div.row
+      div.col
+        input#fire.btn.btn-primary(type="button" value="送信")
   p
     img#loading(src="/images/loading.gif" style="display:none;")
   pre#output
