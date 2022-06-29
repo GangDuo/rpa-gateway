@@ -12,17 +12,31 @@ router.get('/', function(req, res, next) {
 });
 
 router.ws('/', function(ws, req) {
-  ws.on('message', async function(msg) {
+  ws.on('message', async function(_msg) {
     try {
+      const msg = JSON.parse(_msg)
+      const beginDate = msg.data.formData.beginDate;
+      const endDate = msg.data.formData.endDate;
       const me = new MovementExporter;
       const tmpdir = Helpers.tmpdir();
+
+      if(!beginDate || !endDate) {
+        ws.send(JSON.stringify({data: '日付指定がありません！'}));
+        return;
+      }
+
+      if(beginDate > endDate) {
+        ws.send(JSON.stringify({data: '期間があいまいです！'}));
+        return;
+      }
+
       console.log(tmpdir)
 
       await mkdir(tmpdir);
 
       await me.export(tmpdir, {
-        beginDate: '2022-06-01',
-        endDate: '2022-06-30',
+        beginDate,
+        endDate,
         receivers: ['8000'],
       });
     } catch (error) {   
