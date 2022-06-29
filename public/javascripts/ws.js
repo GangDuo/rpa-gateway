@@ -35,9 +35,11 @@ var DefaultSubmitAction = (() => {
     });
 
     document.getElementById(this.fire).addEventListener('click', () => {
-      document.getElementById(this.fire).setAttribute("disabled", true)
-      document.getElementById(this.loading).style.display='';
-      sock.send(JSON.stringify({data: 'from client'}));
+      if(document.getElementsByTagName('form')[0].reportValidity()) {
+        document.getElementById(this.fire).setAttribute("disabled", true)
+        document.getElementById(this.loading).style.display='';
+        sock.send(JSON.stringify({data: 'from client'}));
+      }
     })
   }
 
