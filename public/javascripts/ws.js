@@ -35,10 +35,15 @@ var DefaultSubmitAction = (() => {
     });
 
     document.getElementById(this.fire).addEventListener('click', () => {
-      if(document.getElementsByTagName('form')[0].reportValidity()) {
+      var form = document.getElementsByTagName('form')[0];
+      if(form.reportValidity()) {
         document.getElementById(this.fire).setAttribute("disabled", true)
         document.getElementById(this.loading).style.display='';
-        sock.send(JSON.stringify({data: 'from client'}));
+        sock.send(JSON.stringify({
+          data: {
+            formData: Object.fromEntries(new FormData(form)),
+          }
+        }));
       }
     })
   }
