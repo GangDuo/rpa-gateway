@@ -7,6 +7,9 @@ const mkdir = util.promisify(fs.mkdir);
 const MovementExporter = require('../components/MovementExporter');
 const Helpers = require('../components/Helpers');
 
+const WORK_DIR = process.env.RPA_APP_HOME
+const BIN = process.env.BIN_TOTAL_AMOUNT_OF_WASTE
+
 router.get('/', function(req, res, next) {
   res.render('fmww/waste/index', { title: '廃棄金額' });
 });
@@ -39,6 +42,15 @@ router.ws('/', function(ws, req) {
         endDate,
         receivers: ['8000'],
       });
+
+      await Helpers.rmPeriodInFilename(tmpdir);
+      const filepath = Helpers.tmpFilepath('.xlsx');
+
+      await Helpers.execCmds([
+        `pushd "${WORK_DIR}"&${BIN} /cmd "import;${tmpdir}"`,
+        `pushd "${WORK_DIR}"&${BIN} /cmd "export;${filepath}"`,
+      ]);
+      console.log(filepath)
     } catch (error) {   
       console.log(error)   
     } finally {
